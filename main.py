@@ -3,7 +3,7 @@ import os
 import click
 import uvicorn
 
-from core.config import config
+from core.container.config import config
 
 
 @click.command()
@@ -19,13 +19,14 @@ from core.config import config
     default=False,
 )
 def main(env: str, debug: bool):
-    os.environ["ENV"] = env
+    os.environ["ENV_FILE"] = f".env.{env}"
+    print(f"RUNNING ENV is {env}")
     os.environ["DEBUG"] = str(debug)
     uvicorn.run(
         app="app.server:app",
-        host=config.APP_HOST,
-        port=config.APP_PORT,
-        reload=True if config.ENV != "production" else False,
+        host=config.APP_HOST(),
+        port=config.APP_PORT(),
+        reload=True if config.ENV() != "production" else False,
         workers=1,
     )
 

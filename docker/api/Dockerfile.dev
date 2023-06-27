@@ -15,7 +15,8 @@ FROM python:3.11 as builder
 
 COPY --from=requirements-stage /tmp/requirements.txt /app/requirements.txt
 
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+RUN --mount=type=cache,target=/root/.cache \
+    pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 RUN apt-get update && \
     apt-get install -y wget tar && \
@@ -29,21 +30,26 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 FROM python:3.11-slim-bookworm
 
-RUN useradd --create-home docker_user
+ENV USER_NAME=docker_user
+
+RUN useradd --create-home ${USER_NAME}
 
 COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 USER docker_user
-RUN mkdir /home/docker_user/app
-WORKDIR /home/docker_user/app
+RUN mkdir /home/${USER_NAME}/app
+WORKDIR /home/${USER_NAME}
 
 ENV PYTHONUNBUFFERED=1
-ENV ENV=production
-ENV PYTHONPATH=/home/docker_user/app
+ENV ENV=dev
+ENV PYTHONPATH=/home/${USER_NAME}/app
 
-COPY --chown=docker_user /docker /home/docker_user/docker
-RUN chmod +x /home/docker_user/docker/api/startup.sh
-COPY /src /home/docker_user/app
+COPY --chown=${USER_NAME} /docker /home/${USER_NAME}/docker
+RUN chmod +x /home/${USER_NAME}/docker/api/startup.dev.sh
 
-ENTRYPOINT ["/home/docker_user/docker/api/startup.sh"]
+COPY ./alembic.ini /home/${USER_NAME}/alembic.ini
+# COPY migrations /home/${USER_NAME}/migrations
+# COPY src /home/${USER_NAME}/app
+
+ENTRYPOINT /home/$USER_NAME/docker/api/startup.dev.sh
