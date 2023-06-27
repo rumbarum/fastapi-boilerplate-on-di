@@ -13,22 +13,25 @@ sys.path.append(parent_dir)
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-fileConfig(config.config_file_name)
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-fileConfig(config.config_file_name)
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 
+from app.auth.models import Token
+from app.log.models import RequestResponseLog
+from app.user.models import Base, User
+
 # For auto generate schemas
-from core.config import config
-from app.user.models import *
+from core.container.config import config as app_config
 
 target_metadata = Base.metadata
 
@@ -47,9 +50,9 @@ def run_migrations_offline():
     Calls to context.execute() here emit the given string to the
     script output.
     """
-    url = config.get_main_option("sqlalchemy.url")
+    # url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=config.WRITER_DB_URL,
+        url=app_config.WRITER_DB_URL(),
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -71,7 +74,9 @@ async def run_migrations_online():
     In this scenario we need to create an Engine
     and associate a connection with the context.
     """
-    connectable = create_async_engine(config.WRITER_DB_URL, poolclass=pool.NullPool)
+    connectable = create_async_engine(
+        app_config.WRITER_DB_URL(), poolclass=pool.NullPool
+    )
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

@@ -4,9 +4,11 @@ services:
   api:
     build:
       context: .
-      dockerfile: docker/api/Dockerfile
+      dockerfile: docker/api/Dockerfile.dev
     container_name: api
     hostname: api
+    env_file:
+      - .env.docker
     ports:
       - '8000:8000'
     networks:
@@ -15,7 +17,9 @@ services:
     depends_on:
       - db
     volumes:
-      - $PWD:/home
+      - ./src:/home/docker_user/app
+      - ./migrations:/home/docker_user/migrations
+      - ./alembic.ini:/home/docker_user/app/alembic.ini
   db:
     build:
       context: .
@@ -23,7 +27,7 @@ services:
     container_name: db
     hostname: db
     ports:
-      - '3306:3306'
+      - '5432:5432'
     networks:
       - backend
   redis:
