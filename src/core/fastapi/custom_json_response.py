@@ -1,20 +1,10 @@
 from typing import Any
 
-import numpy as np
 import orjson
 from fastapi.responses import JSONResponse
-from pandas import Timestamp
 
 
 def json_encoder_extend(obj):
-    if isinstance(obj, np.integer):
-        return int(obj)
-    if isinstance(obj, np.floating):
-        return float(obj)
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()
-    if isinstance(obj, Timestamp):
-        return obj.timestamp()
     return str(obj)
 
 
