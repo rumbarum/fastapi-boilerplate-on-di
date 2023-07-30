@@ -22,7 +22,7 @@ class TokenHelper:
             },
             key=jwt_secret_key,
             algorithm=jwt_algorithm,
-        ).decode("utf8")
+        )
         return token
 
     @staticmethod
