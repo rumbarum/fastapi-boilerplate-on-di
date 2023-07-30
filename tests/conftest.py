@@ -24,6 +24,7 @@ from app.server import app
 
 engine = app.container.writer_engine()
 
+
 async def async_create_all():
     async with engine.begin() as conn:
         # Use run_sync() to run metadata.create_all() asynchronously
