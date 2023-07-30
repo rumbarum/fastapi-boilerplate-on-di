@@ -1,11 +1,12 @@
 from typing import List, Optional
 
 import bcrypt
-from dependency_injector.wiring import Provide
+from dependency_injector.wiring import Provide, inject
 from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import async_scoped_session
 
 from app.auth.service import TokenService
+from core.base_class.service import BaseService
 from core.db import Transactional
 
 from .exceptions import (
@@ -15,6 +16,7 @@ from .exceptions import (
     UserNotFoundException,
 )
 from .models import LoginResponseSchema, User
+from .repository import UserRepository
 
 session: async_scoped_session = Provide["session"]
 
@@ -31,9 +33,12 @@ def check_password(hashed_password: str, user_password: str) -> bool:
     return bcrypt.checkpw(byte_password, hashed_password.encode("utf-8"))
 
 
-class UserService:
-    def __init__(self):
-        ...
+class UserService(BaseService):
+
+    repository: UserRepository
+
+    def __init__(self, repository):
+        super().__init__(repository)
 
     async def get_user_list(
         self,
@@ -87,10 +92,12 @@ class UserService:
             return None
         return user.authority
 
+    @inject
     async def login(
         self,
         email: str,
         password: str,
+        token_service: TokenService = Provide["token_container.token_service"],
     ) -> LoginResponseSchema:
         result = await session.execute(
             select(User).where(and_(User.email == email))  # type: ignore[arg-type]
@@ -101,10 +108,7 @@ class UserService:
         if not check_password(user.password, password):
             raise NoEmailOrWrongPassword
 
-        access_token, refresh_token = await TokenService.issue_token(
-            user.id
-        )
-
+        access_token, refresh_token = await token_service.issue_token(user.id)
         response = LoginResponseSchema(
             access_token=access_token, refresh_token=refresh_token
         )
