@@ -12,6 +12,10 @@ from core.external_service import AuthClient
 nest_asyncio.apply()
 
 # This setting env var should be written earlier than import app for load different config(.env.test) for test!
+
+# create Test DB,
+# required
+# make test-db
 import os
 
 os.environ["ENV_FILE"] = ".env.test"
@@ -19,7 +23,6 @@ os.environ["ENV_FILE"] = ".env.test"
 from app.server import app
 
 engine = app.container.writer_engine()
-
 
 async def async_create_all():
     async with engine.begin() as conn:
