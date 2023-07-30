@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Depends
 
 from .models import AccessTokenResponse, RefreshTokenRequest
 from .service import TokenService
@@ -10,8 +11,12 @@ auth_router = APIRouter()
     "/refresh",
     response_model=AccessTokenResponse,
 )
-async def refresh_token(request: RefreshTokenRequest):
-    new_access_token = await TokenService().refresh_access_token(
+@inject
+async def refresh_token(
+    request: RefreshTokenRequest,
+    token_service: TokenService = Depends(Provide["token_container.token_service"]),
+):
+    new_access_token = await token_service.refresh_access_token(
         refresh_token=request.refresh_token
     )
     return {"access_token": new_access_token}

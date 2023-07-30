@@ -2,6 +2,7 @@ from datetime import datetime
 
 from dependency_injector.wiring import Provide
 
+from core.base_class.service import BaseService
 from core.db import Transactional
 from core.utils.token_helper import TokenHelper
 
@@ -10,15 +11,18 @@ from .models import Token
 from .repository import TokenRepository
 
 
-class TokenService:
-    Repository: TokenRepository
+class TokenService(BaseService):
     """
-    Token Related Service 
+    Token Related Service
     """
 
-    @classmethod
+    repository: TokenRepository
+
+    def __init__(self, repository):
+        super().__init__(repository)
+
     async def issue_token(
-        cls,
+        self,
         user_id: int,
         access_token_exp_in: int = Provide["ACCESS_TOKEN_EXPIRE_SECONDS"],
         refresh_token_exp_in: int = Provide["REFRESH_TOKEN_EXPIRE_SECONDS"],
@@ -30,13 +34,12 @@ class TokenService:
             payload={"sub": "refresh"}, expire_period=refresh_token_exp_in
         )
         token_model = Token(user_id=user_id, refresh_token=refresh_token)
-        await cls.Repository.save(token_model)
+        await self.repository.save(token_model)
         return access_token, refresh_token
 
-    @classmethod
     @Transactional()
     async def refresh_access_token(
-        cls,
+        self,
         refresh_token: str,
         refresh_expire_in: int = Provide["REFRESH_TOKEN_EXPIRE_SECONDS"],
     ):
@@ -44,7 +47,7 @@ class TokenService:
         if decoded_refresh_token.get("sub") != "refresh":
             raise TokenDecodeException
 
-        token_instance = await cls.Repository.get_token_instance(refresh_token)
+        token_instance = await self.repository.get_token_instance(refresh_token)
         if (
             token_instance is not None
             and (exp := token_instance.refresh_expires_at) is not None
@@ -57,6 +60,5 @@ class TokenService:
             return new_access_token
         raise TokenExpireException
 
-    @classmethod
-    async def revoke_refresh_token(cls, user_id: int) -> None:
-        await cls.Repository.make_all_token_invalid(user_id)
+    async def revoke_refresh_token(self, user_id: int) -> None:
+        await self.repository.make_all_token_invalid(user_id)
