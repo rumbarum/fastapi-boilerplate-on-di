@@ -1,5 +1,6 @@
 from typing import List
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query
 
 from core.dependencies import PermissionDependency
@@ -27,11 +28,13 @@ user_router = APIRouter(route_class=LogRoute)
     dependencies=[Depends(PermissionDependency([]))],
 )
 @cached(prefix="get_user_list", ttl=60)
+@inject
 async def get_user_list(
     limit: int = Query(10, description="Limit"),
     prev: int = Query(None, description="Prev ID"),
+    user_service: UserService = Depends(Provide["user_container.user_service"]),
 ):
-    return await UserService().get_user_list(limit=limit, prev=prev)
+    return await user_service.get_user_list(limit=limit, prev=prev)
 
 
 @user_router.post(
@@ -39,8 +42,12 @@ async def get_user_list(
     response_model=CreateUserResponseSchema,
     responses={"400": {"model": ErrorResponse}},
 )
-async def create_user(request: CreateUserRequestSchema):
-    await UserService().create_user(**request.dict())
+@inject
+async def create_user(
+    request: CreateUserRequestSchema,
+    user_service: UserService = Depends(Provide["user_container.user_service"]),
+):
+    await user_service.create_user(**request.dict())
     return {"email": request.email, "nickname": request.nickname}
 
 
@@ -49,6 +56,10 @@ async def create_user(request: CreateUserRequestSchema):
     response_model=LoginResponse,
     responses={"404": {"model": ErrorResponse}},
 )
-async def login(request: LoginRequest):
-    token = await UserService().login(email=request.email, password=request.password)
+@inject
+async def login(
+    request: LoginRequest,
+    user_service: UserService = Depends(Provide["user_container.user_service"]),
+):
+    token = await user_service.login(email=request.email, password=request.password)
     return {"token": token.access_token, "refresh_token": token.refresh_token}
