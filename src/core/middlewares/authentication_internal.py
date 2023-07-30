@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 
 class InternalAuthBackend(AuthenticationBackend):
     async def authenticate(
-        self, conn: HTTPConnection
+        self,
+        conn: HTTPConnection,
+        user_service: UserService = Provide["user_container.user_service"],
     ) -> Tuple[AuthCredentials, BaseUser] | None:
 
         current_user = AuthUser()
@@ -53,6 +55,6 @@ class InternalAuthBackend(AuthenticationBackend):
             return auth_credential, current_user
 
         current_user.user_id = user_id
-        current_user.user_authority = await UserService().get_authority(user_id=user_id)
+        current_user.user_authority = await user_service.get_authority(user_id=user_id)
         auth_credential.scopes = token_scope
         return auth_credential, current_user
