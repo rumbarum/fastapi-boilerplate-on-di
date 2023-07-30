@@ -1,9 +1,8 @@
 from datetime import datetime
 
-from dependency_injector.wiring import Provide
+from dependency_injector.wiring import Provide, inject
 
 from core.base_class.service import BaseService
-from core.db import Transactional
 from core.utils.token_helper import TokenHelper
 
 from .exceptions import TokenDecodeException, TokenExpireException
@@ -21,11 +20,12 @@ class TokenService(BaseService):
     def __init__(self, repository):
         super().__init__(repository)
 
+    @inject
     async def issue_token(
         self,
         user_id: int,
-        access_token_exp_in: int = Provide["ACCESS_TOKEN_EXPIRE_SECONDS"],
-        refresh_token_exp_in: int = Provide["REFRESH_TOKEN_EXPIRE_SECONDS"],
+        access_token_exp_in: int = Provide["config.ACCESS_TOKEN_EXPIRE_SECONDS"],
+        refresh_token_exp_in: int = Provide["config.REFRESH_TOKEN_EXPIRE_SECONDS"],
     ) -> tuple:
         access_token = TokenHelper.encode(
             payload={"user_id": user_id}, expire_period=access_token_exp_in
@@ -37,11 +37,11 @@ class TokenService(BaseService):
         await self.repository.save(token_model)
         return access_token, refresh_token
 
-    @Transactional()
+    @inject
     async def refresh_access_token(
         self,
         refresh_token: str,
-        refresh_expire_in: int = Provide["REFRESH_TOKEN_EXPIRE_SECONDS"],
+        refresh_expire_in: int = Provide["config.REFRESH_TOKEN_EXPIRE_SECONDS"],
     ):
         decoded_refresh_token = TokenHelper.decode(token=refresh_token)
         if decoded_refresh_token.get("sub") != "refresh":
