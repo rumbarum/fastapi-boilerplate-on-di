@@ -24,11 +24,13 @@ class Token(Base):
         self,
         user_id,
         refresh_token,
-        rtk_exp: int = Provide["REFRESH_TOKEN_EXPIRE_SECONDS"],
+        refresh_token_expires_in: int = Provide["config.REFRESH_TOKEN_EXPIRE_SECONDS"],
     ):
         self.user_id = user_id
         self.refresh_token = refresh_token
-        self.refresh_expires_at = datetime.utcnow() + timedelta(seconds=rtk_exp)
+        self.refresh_expires_at = datetime.utcnow() + timedelta(
+            seconds=refresh_token_expires_in
+        )
         self.is_valid = True
 
 
