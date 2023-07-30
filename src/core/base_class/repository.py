@@ -4,7 +4,7 @@ from dependency_injector.wiring import Provide
 from sqlalchemy import and_, delete, or_, select, update
 from sqlalchemy.ext.asyncio import async_scoped_session
 
-from core.db import Transactional
+from core.db import standalone_session
 from core.enums.repository import SynchronizeSessionEnum
 
 session: async_scoped_session = Provide["session"]
@@ -19,6 +19,7 @@ class BaseRepository(Generic[ModelType]):
     def __init__(self, model: ModelType):
         self.model = model
 
+    @standalone_session
     async def get_by_id(self, id: int) -> Optional[ModelType]:
         if hasattr(self.model, "id"):
             query = select(self.model.id == id)  # type: ignore[arg-type]
@@ -26,6 +27,7 @@ class BaseRepository(Generic[ModelType]):
             return result.scalars().first()
         return None
 
+    @standalone_session
     async def find_by_or_condition(
         self,
         where_condition: dict[str, str | int],
@@ -42,6 +44,7 @@ class BaseRepository(Generic[ModelType]):
             return result.scalars().first()
         return result.scalars().all()
 
+    @standalone_session
     async def find_by_and_condition(
         self,
         where_condition: dict[str, str | int],
@@ -58,7 +61,7 @@ class BaseRepository(Generic[ModelType]):
             return result.scalars().first()
         return result.scalars().all()
 
-    @Transactional()
+    @standalone_session
     async def update_by_id(
         self,
         id: int,
@@ -77,11 +80,11 @@ class BaseRepository(Generic[ModelType]):
             raise ValueError(f"{self.model} HAS NO ID")
 
     @staticmethod
-    @Transactional()
+    @standalone_session
     async def delete(model: ModelType) -> None:
         await session.delete(model)  # type: ignore[arg-type]
 
-    @Transactional()
+    @standalone_session
     async def delete_by_id(
         self,
         id: int,
@@ -98,6 +101,6 @@ class BaseRepository(Generic[ModelType]):
             raise ValueError(f"{self.model} HAS NO ID")
 
     @staticmethod
-    @Transactional()
+    @standalone_session
     async def save(model: ModelType) -> None:
-        await session.add(model)  # type: ignore[func-returns-value]
+        session.add(model)  # type: ignore[func-returns-value]
