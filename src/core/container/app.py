@@ -9,7 +9,9 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import sessionmaker
 
+from app.auth.container import AuthContainer
 from app.log.service import DatabaseLoghandler
+from app.user.container import UserContainer
 from core.db.session_maker import RoutingSession, get_session_context
 from core.external_service.auth_client import AuthClient
 from core.helpers.cache import CacheManager, CustomKeyMaker, RedisBackend
@@ -111,3 +113,7 @@ class AppContainer(containers.DeclarativeContainer):
         session_factory=async_session_factory,
         scopefunc=get_session_context,
     )
+
+    # app/.../container
+    user_container = providers.Container(UserContainer)
+    auth_container = providers.Container(AuthContainer)
