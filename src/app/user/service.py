@@ -2,7 +2,6 @@ from typing import List, Optional
 
 import bcrypt
 from dependency_injector.wiring import Provide, inject
-from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import async_scoped_session
 
 from app.auth.service import TokenService
@@ -34,7 +33,6 @@ def check_password(hashed_password: str, user_password: str) -> bool:
 
 
 class UserService(BaseService):
-
     repository: UserRepository
 
     def __init__(self, repository):
@@ -45,17 +43,7 @@ class UserService(BaseService):
         limit: int = 12,
         prev: Optional[int] = None,
     ) -> List[User]:
-        query = select(User)  # type: ignore[arg-type]
-
-        if prev:
-            query = query.where(User.id < prev)
-
-        if limit > 12:
-            limit = 12
-
-        query = query.limit(limit)
-        result = await session.execute(query)
-        return result.scalars().all()
+        return self.repository.get_user_list(limit=limit, prev=prev)
 
     @Transactional()
     async def create_user(
@@ -63,31 +51,28 @@ class UserService(BaseService):
     ) -> None:
         if password1 != password2:
             raise PasswordDoesNotMatchException
+        hashed_password = hash_password(password1)
 
-        query = select(User).where(or_(User.email == email, User.nickname == nickname))  # type: ignore[arg-type]
-        result = await session.execute(query)
-        is_exist = result.scalars().first()
-        if is_exist:
+        exist_user = await self.repository.get_user_by_email_or_nickname(
+            email=email, nickname=nickname
+        )
+        if exist_user:
             raise DuplicateEmailOrNicknameException
 
-        hashed_password = hash_password(password1)
-        user = User(email=email, password=hashed_password, nickname=nickname)
-        session.add(user)
+        await self.repository.save_user(
+            email=email, hashed_password=hashed_password, nickname=nickname
+        )
 
     async def is_admin(self, user_id: int) -> bool:
-        result = await session.execute(select(User).where(User.id == user_id))  # type: ignore[arg-type]
-        user = result.scalars().first()
+        user = await self.repository.get_by_id(id=user_id)
         if not user:
             return False
-
         if user.is_admin is False:
             return False
-
         return True
 
     async def get_authority(self, user_id: int) -> None | str:
-        result = await session.execute(select(User).where(User.id == user_id))  # type: ignore[arg-type]
-        user = result.scalars().first()
+        user = await self.repository.get_by_id(id=user_id)
         if not user:
             return None
         return user.authority
@@ -99,10 +84,7 @@ class UserService(BaseService):
         password: str,
         token_service: TokenService = Provide["token_container.token_service"],
     ) -> LoginResponseSchema:
-        result = await session.execute(
-            select(User).where(and_(User.email == email))  # type: ignore[arg-type]
-        )
-        user = result.scalars().first()
+        user = await self.repository.get_user_by_email(email=email)
         if not user:
             raise UserNotFoundException
         if not check_password(user.password, password):
