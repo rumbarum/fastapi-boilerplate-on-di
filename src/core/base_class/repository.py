@@ -102,5 +102,5 @@ class BaseRepository(Generic[ModelType]):
 
     @staticmethod
     @standalone_session
-    async def save(model: ModelType) -> None:
+    def save(model: ModelType) -> None:
         session.add(model)  # type: ignore[func-returns-value]
