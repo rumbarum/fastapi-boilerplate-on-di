@@ -7,7 +7,9 @@ from fastapi.routing import APIRoute
 
 class LogRoute(APIRoute):
     @inject
-    def get_route_handler(self, log_handler=Provide["db_log_handler"]) -> Callable:
+    def get_route_handler(
+        self, log_handler=Provide["log_container.db_log_handler"]
+    ) -> Callable:
         original_route_handler = super().get_route_handler()
 
         async def custom_route_handler(request: Request) -> Response:

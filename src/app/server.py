@@ -22,7 +22,8 @@ def init_routers(app_: FastAPI) -> None:
 
 @inject
 def init_listeners(
-    app_: FastAPI, log_handler: DatabaseLoghandler = Provide["db_log_handler"]
+    app_: FastAPI,
+    log_handler: DatabaseLoghandler = Provide["log_container.db_log_handler"],
 ) -> None:
     """
     Order of presence is not affecting handler.
