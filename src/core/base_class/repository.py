@@ -1,4 +1,4 @@
-from typing import Any, Generic, Optional, TypeVar
+from typing import Any, Generic, Optional, Type, TypeVar
 
 from dependency_injector.wiring import Provide
 from sqlalchemy import and_, delete, or_, select, update
@@ -14,15 +14,15 @@ ModelType = TypeVar("ModelType")
 
 
 class BaseRepository(Generic[ModelType]):
-    model: ModelType
+    model: Type[ModelType]
 
-    def __init__(self, model: ModelType):
+    def __init__(self, model: Type[ModelType]):
         self.model = model
 
     @standalone_session
     async def get_by_id(self, id: int) -> Optional[ModelType]:
         if hasattr(self.model, "id"):
-            query = select(self.model.id == id)  # type: ignore[arg-type]
+            query = select(self.model.id == id)  # type: ignore[attr-defined]
             result = await session.execute(query)
             return result.scalars().first()
         return None
@@ -71,7 +71,7 @@ class BaseRepository(Generic[ModelType]):
         if hasattr(self.model, "id"):
             query = (
                 update(self.model)  # type: ignore[arg-type]
-                .where(self.model.id == id)
+                .where(self.model.id == id)  # type: ignore[attr-defined]
                 .values(**params)
                 .execution_options(synchronize_session=synchronize_session)
             )
@@ -93,7 +93,7 @@ class BaseRepository(Generic[ModelType]):
         if hasattr(self.model, "id"):
             query = (
                 delete(self.model)  # type: ignore[arg-type]
-                .where(self.model.id == id)
+                .where(self.model.id == id)  # type: ignore[attr-defined]
                 .execution_options(synchronize_session=synchronize_session)
             )
             await session.execute(query)
