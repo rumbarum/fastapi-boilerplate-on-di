@@ -34,7 +34,7 @@ class TokenService(BaseService):
             payload={"sub": "refresh"}, expire_period=refresh_token_exp_in
         )
         token_model = Token(user_id=user_id, refresh_token=refresh_token)
-        await self.repository.save(token_model)
+        self.repository.save(token_model)
         return access_token, refresh_token
 
     @inject
