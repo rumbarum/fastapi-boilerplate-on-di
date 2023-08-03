@@ -12,7 +12,7 @@ from core.fastapi.pydantic_models import BodyBaseModel, ResponseBaseModel
 class Token(Base):
     __tablename__ = "tokens"
 
-    id: int = Column(BigInteger, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
     user_id = Column(Integer, nullable=False)
     refresh_token = Column(String, nullable=False, index=True)
     refresh_expires_at = Column(
