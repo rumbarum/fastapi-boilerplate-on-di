@@ -18,7 +18,7 @@ class TokenRepository(BaseRepository[Token]):
 
     @standalone_session
     async def get_token_instance(self, token: str) -> Token | None:
-        query = select(self.model).where(and_(self.model.refresh_token == token))
+        query = select(self.model).where(and_(self.model.refresh_token == token))  # type: ignore[arg-type]
         result = await session.execute(query)
         return result.scalars().first()
 
