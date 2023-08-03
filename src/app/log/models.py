@@ -18,4 +18,4 @@ class RequestResponseLog(Base, TimestampMixin):
     method = Column(sa.VARCHAR(20), nullable=False)
     path = Column(sa.VARCHAR(20), nullable=False)
     response_status = Column(sa.SMALLINT, nullable=False)
-    request_id: str = Column(UUIDType(binary=False), nullable=False, default=uuid.uuid4)
+    request_id = Column(UUIDType(binary=False), nullable=False, default=uuid.uuid4)
