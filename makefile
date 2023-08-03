@@ -31,21 +31,27 @@ del-ds:
 
 
 define check_image_and_run
-    @container_id=$$(docker images -q $1); \
-    if [ -z $container_id ]; then \
+    if [ -z $$(docker images -q $1) ]; then \
+        echo \>\>\>\>\>\> Image $1 was not found ; \
+        echo \>\>\>\>\>\> Building $1 ... ; \
         docker build -f docker/db/Dockerfile -t $1 . && \
-		docker run -p 5432:5432 --rm $1; \
+		docker run -d -p 5432:5432 --rm $1; \
     else \
-		docker run -p 5432:5432 --rm $1; \
+        echo \>\>\>\>\>\> Image $1 was found ; \
+        echo \>\>\>\>\>\> Running $1 ... ; \
+		docker run -d -p 5432:5432 --rm $1; \
     fi
 endef
 
 test-db-run:
+	@echo ">>>>>> Running test db..."
 	$(call check_image_and_run, $$TEST_IMAGE)
 
 test-db-stop:
+	@echo ">>>>>> Stopping test db..."
 	docker ps -qf ancestor=$$TEST_IMAGE | xargs docker stop
 
-test-db-reset:
+test-db-rerun:
+	@echo ">>>>>> Stop and Rerun test db..."
 	make test-db-stop
 	make test-db-run
