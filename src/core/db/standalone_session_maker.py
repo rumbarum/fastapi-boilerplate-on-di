@@ -14,7 +14,7 @@ def standalone_session(func):
         context = set_session_context(session_id=session_id)
 
         try:
-            await func(*args, **kwargs)
+            result = await func(*args, **kwargs)
             await session.commit()
         except Exception as e:
             await session.rollback()
@@ -22,5 +22,6 @@ def standalone_session(func):
         finally:
             await session.remove()
             reset_session_context(context=context)
+        return result
 
     return _standalone_session
