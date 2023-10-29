@@ -5,7 +5,10 @@ from typing import Type
 from starlette.requests import Request
 
 from application.core.exceptions import CustomException
-from application.core.exceptions.middleware import NoAuthenticationException, NoAuthorityException
+from application.core.exceptions.middleware import (
+    NoAuthenticationException,
+    NoAuthorityException,
+)
 from application.core.middlewares import AuthUser
 
 

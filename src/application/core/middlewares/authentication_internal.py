@@ -6,8 +6,8 @@ from dependency_injector.wiring import Provide
 from starlette.authentication import AuthenticationBackend, BaseUser
 from starlette.requests import HTTPConnection
 
-from application.domain.user.service import UserService
 from application.core.exceptions import TokenException
+from application.domain.user.service import UserService
 
 from ..exceptions.middleware import NoAuthenticationException
 from .authentication_external import AuthCredentials, AuthUser

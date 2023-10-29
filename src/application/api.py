@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
+from application.core.fastapi.custom_json_response import CustomORJSONResponse
+from application.core.fastapi.pydantic_models import ResponseBaseModel
 from application.domain.auth.views import auth_router
 from application.domain.home.views import home_router
 from application.domain.user.views import user_router as user_v1_router
-from application.core.fastapi.custom_json_response import CustomORJSONResponse
-from application.core.fastapi.pydantic_models import ResponseBaseModel
 
 
 class ErrorResponse(ResponseBaseModel):
