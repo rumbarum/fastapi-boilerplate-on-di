@@ -81,7 +81,7 @@ $ make run
 ## SQLAlchemy for asyncio context
 
 ```python
-from core.db import Transactional
+from application.core import Transactional
 from dependency_injector.wiring import Provide
 
 session = Provide["session"]
@@ -89,7 +89,7 @@ session = Provide["session"]
 
 @Transactional()
 async def create_user(self):
-    session.add(User(email="padocon@naver.com"))
+  session.add(User(email="padocon@naver.com"))
 ```
 
 Do not use explicit `commit()`. `Transactional` class automatically do.
@@ -103,12 +103,12 @@ However, it doesn't go through middleware in tests or background tasks.
 So you need to use the `@standalone_session` decorator.
 
 ```python
-from core.db import standalone_session
+from application.core import standalone_session
 
 
 @standalone_session
 def test_something():
-    ...
+  ...
 ```
 
 ### Multiple databases
@@ -168,26 +168,26 @@ Refer `Logging` class inside of `core/fastapi/dependencies/logging.py`
 Permissions `IsAdmin`, `IsAuthenticated`, `AllowAll` have already been implemented.
 
 ```python
-from core.fastapi.dependencies import (
-    PermissionDependency,
+from application.core import (
+  PermissionDependency,
 )
-from app.auth.permissions import IsAdmin
+from application.domain.auth.permissions import IsAdmin
 
 user_router = APIRouter()
 
 
 @user_router.get(
-    "",
-    response_model=List[GetUserListResponseSchema],
-    response_model_exclude={"id"},
-    responses={"400": {"model": ExceptionResponseSchema}},
-    dependencies=[Depends(PermissionDependency([IsAdmin]))],  # HERE
+  "",
+  response_model=List[GetUserListResponseSchema],
+  response_model_exclude={"id"},
+  responses={"400": {"model": ExceptionResponseSchema}},
+  dependencies=[Depends(PermissionDependency([IsAdmin]))],  # HERE
 )
 async def get_user_list(
         limit: int = Query(10, description="Limit"),
         prev: int = Query(None, description="Prev ID"),
 ):
-    pass
+  pass
 ```
 Insert permission through `dependencies` argument.
 
@@ -202,23 +202,25 @@ Refer the README of https://github.com/teamhide/fastapi-event
 ## Cache
 
 ### Caching by prefix
+
 ```python
-from core.helpers.cache import cached
+from application.core.helpers.cache import cached
 
 
 @cached(prefix="get_user", ttl=60)
 async def get_user():
-    ...
+  ...
 ```
 
 ### Caching by tag
+
 ```python
-from core.helpers.cache import cached, CacheTag
+from application.core.helpers.cache import cached, CacheTag
 
 
 @cached(tag=CacheTag.GET_USER_LIST, ttl=60)
 async def get_user():
-    ...
+  ...
 ```
 
 Use the `cached` decorator to cache the return value of a function.
@@ -228,12 +230,12 @@ Depending on the argument of the function, caching is stored with a different va
 ### Custom Key builder
 
 ```python
-from core.helpers.cache.base import BaseKeyMaker
+from application.core.helpers.cache.base import BaseKeyMaker
 
 
 class CustomKeyMaker(BaseKeyMaker):
-    async def make(self, function: Callable, prefix: str) -> str:
-        ...
+  async def make(self, function: Callable, prefix: str) -> str:
+    ...
 ```
 
 If you want to create a custom key, inherit the BaseKeyMaker class and implement the make() method.
@@ -241,18 +243,18 @@ If you want to create a custom key, inherit the BaseKeyMaker class and implement
 ### Custom Backend
 
 ```python
-from core.helpers.cache.base import BaseBackend
+from application.core.helpers.cache.base import BaseBackend
 
 
 class RedisBackend(BaseBackend):
-    async def get(self, key: str) -> Any:
-        ...
+  async def get(self, key: str) -> Any:
+    ...
 
-    async def set(self, response: Any, key: str, ttl: int = 60) -> None:
-        ...
+  async def set(self, response: Any, key: str, ttl: int = 60) -> None:
+    ...
 
-    async def delete_startswith(self, value: str) -> None:
-        ...
+  async def delete_startswith(self, value: str) -> None:
+    ...
 ```
 
 If you want to create a custom key, inherit the BaseBackend class and implement the `get()`, `set()`, `delete_startswith()` method.
@@ -260,7 +262,7 @@ If you want to create a custom key, inherit the BaseBackend class and implement 
 Set your custom backend or keymaker on   (`src/core/container/app.py`)
 
 ```python
-# core/container/app.py
+# core/container/domain.py
 ...
 # this change applied to cache manager automatically 
 redis_backend = providers.Factory(YourRedisBackend)
@@ -270,7 +272,7 @@ redis_key_maker = providers.Factory(YourKeyMaker)
 ### Remove all cache by prefix/tag
 
 ```python
-from core.helpers.cache import CacheTag
+from application.core.helpers.cache import CacheTag
 
 from dependency_injector.wiring import Provide
 

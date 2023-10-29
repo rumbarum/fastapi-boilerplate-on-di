@@ -6,12 +6,12 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
-from core.db.session_maker import Base
-from core.external_service import AuthClient
+from application.core.db.session_maker import Base
+from application.core.external_service import AuthClient
 
 nest_asyncio.apply()
 
-# This setting env var should be written earlier than import app for load different config(.env.test) for test!
+# This setting env var should be written earlier than import domain for load different config(.env.test) for test!
 
 # create Test DB,
 # required
@@ -20,7 +20,7 @@ import os
 
 os.environ["ENV_FILE"] = ".env.test"
 
-from app.server import app
+from application.server import app
 
 engine = app.container.writer_engine()
 
