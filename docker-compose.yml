@@ -17,9 +17,10 @@ services:
     depends_on:
       - db
     volumes:
-      - ./src:/home/docker_user/domain
+      - ./src:/home/docker_user/app
       - ./migrations:/home/docker_user/migrations
       - ./alembic.ini:/home/docker_user/domain/alembic.ini
+
   db:
     build:
       context: .
@@ -30,6 +31,7 @@ services:
       - '5432:5432'
     networks:
       - backend
+
   redis:
     build:
       context: .
