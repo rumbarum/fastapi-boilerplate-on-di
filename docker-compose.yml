@@ -17,9 +17,9 @@ services:
     depends_on:
       - db
     volumes:
-      - ./src:/home/docker_user/app
+      - ./src:/home/docker_user/domain
       - ./migrations:/home/docker_user/migrations
-      - ./alembic.ini:/home/docker_user/app/alembic.ini
+      - ./alembic.ini:/home/docker_user/domain/alembic.ini
   db:
     build:
       context: .
