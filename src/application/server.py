@@ -6,12 +6,12 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import FastAPI, Request
 
 from application.api import router
-from application.domain.log.service import DatabaseLoghandler
 from application.core.container.app import AppContainer
 from application.core.enums import ResponseCode
 from application.core.exceptions import CustomException
 from application.core.fastapi.custom_json_response import CustomORJSONResponse
 from application.core.utils.http_client import Aiohttp
+from application.domain.log.service import DatabaseLoghandler
 
 nest_asyncio.apply()
 

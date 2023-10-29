@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Response
 
-from application.domain.auth.permissions import AllowAll
 from application.core.dependencies import PermissionDependency
 from application.core.fastapi.log_route import LogRoute
+from application.domain.auth.permissions import AllowAll
 
 home_router = APIRouter(route_class=LogRoute)
 

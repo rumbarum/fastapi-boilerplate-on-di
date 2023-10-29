@@ -4,9 +4,9 @@ import bcrypt
 from dependency_injector.wiring import Provide, inject
 from sqlalchemy.ext.asyncio import async_scoped_session
 
-from application.domain.auth.service import TokenService
 from application.core.base_class.service import BaseService
 from application.core.db import Transactional
+from application.domain.auth.service import TokenService
 
 from .exceptions import (
     DuplicateEmailOrNicknameException,
