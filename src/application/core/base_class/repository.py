@@ -13,7 +13,11 @@ session: async_scoped_session = Provide["session"]
 ModelType = TypeVar("ModelType")
 
 
-class BaseAlchemyRepository(Generic[ModelType]):
+class BaseRepository:
+    pass
+
+
+class BaseAlchemyRepository(BaseRepository, Generic[ModelType]):
     model: Type[ModelType]
 
     def __init__(self, model: Type[ModelType]):
