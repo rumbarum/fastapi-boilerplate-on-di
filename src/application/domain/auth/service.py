@@ -5,9 +5,9 @@ from dependency_injector.wiring import Provide, inject
 from application.core.base_class.service import BaseService
 from application.core.utils.token_helper import TokenHelper
 
-from .exceptions import TokenDecodeException, TokenExpireException
+from application.core.exceptions.token import TokenDecodeException, TokenExpireException
 from .models import Token
-from .repository import TokenRepository
+from .repository import TokenAlchemyRepository
 
 
 class TokenService(BaseService):
@@ -15,7 +15,7 @@ class TokenService(BaseService):
     Token Related Service
     """
 
-    repository: TokenRepository
+    repository: TokenAlchemyRepository
 
     def __init__(self, repository):
         super().__init__(repository)

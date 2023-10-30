@@ -6,7 +6,7 @@ from aiohttp import ClientSession
 
 from application.core.enums import ResponseCode
 from application.core.utils.http_client import BaseHttpClient
-from application.domain.auth.exceptions import (
+from application.core.exceptions.token import (
     TokenDecodeException,
     TokenExpireException,
 )
