@@ -1,8 +1,8 @@
-from .repository import BaseAlchemyRepository
+from .repository import BaseRepository
 
 
 class BaseService:
-    repository: BaseAlchemyRepository
+    repository: BaseRepository
 
-    def __init__(self, repository: BaseAlchemyRepository):
+    def __init__(self, repository: BaseRepository):
         self.repository = repository
