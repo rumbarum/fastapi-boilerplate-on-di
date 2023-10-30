@@ -5,7 +5,7 @@ from application.core.base_class.service import BaseService
 from application.core.db import standalone_session
 
 from .models import RequestResponseLog
-from .repository import RequestResponseLogRepository
+from .repository import RequestResponseLogAlchemyRepository
 
 session: async_scoped_session = Provide["session"]
 
@@ -16,7 +16,7 @@ class BaseLogHandler:
 
 
 class DatabaseLoghandler(BaseLogHandler, BaseService):
-    repository: RequestResponseLogRepository
+    repository: RequestResponseLogAlchemyRepository
 
     def __init__(self, repository):
         super().__init__()

@@ -4,7 +4,7 @@ from dependency_injector.wiring import Provide
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import async_scoped_session
 
-from application.core.base_class.repository import BaseRepository
+from application.core.base_class.repository import BaseAlchemyRepository
 from application.core.db import standalone_session
 
 from .models import User
@@ -12,7 +12,7 @@ from .models import User
 session: async_scoped_session = Provide["session"]
 
 
-class UserRepository(BaseRepository[User]):
+class UserAlchemyRepository(BaseAlchemyRepository[User]):
     model: Type[User]
 
     def __init__(self, model):

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import jwt
 from dependency_injector.wiring import Provide, inject
 
-from application.domain.auth.exceptions import (
+from application.core.exceptions.token import (
     TokenDecodeException,
     TokenExpireException,
 )

@@ -13,13 +13,12 @@ session: async_scoped_session = Provide["session"]
 ModelType = TypeVar("ModelType")
 
 
-class BaseRepository(Generic[ModelType]):
+class BaseAlchemyRepository(Generic[ModelType]):
     model: Type[ModelType]
 
     def __init__(self, model: Type[ModelType]):
         self.model = model
 
-    @standalone_session
     async def get_by_id(self, id: int) -> Optional[ModelType]:
         if hasattr(self.model, "id"):
             query = select(self.model.id == id)  # type: ignore[attr-defined]
@@ -27,7 +26,6 @@ class BaseRepository(Generic[ModelType]):
             return result.scalars().first()
         return None
 
-    @standalone_session
     async def find_by_or_condition(
         self,
         where_condition: dict[str, str | int],
@@ -44,7 +42,6 @@ class BaseRepository(Generic[ModelType]):
             return result.scalars().first()
         return result.scalars().all()
 
-    @standalone_session
     async def find_by_and_condition(
         self,
         where_condition: dict[str, str | int],
@@ -61,7 +58,6 @@ class BaseRepository(Generic[ModelType]):
             return result.scalars().first()
         return result.scalars().all()
 
-    @standalone_session
     async def update_by_id(
         self,
         id: int,
@@ -80,11 +76,9 @@ class BaseRepository(Generic[ModelType]):
             raise ValueError(f"{self.model} HAS NO ID")
 
     @staticmethod
-    @standalone_session
     async def delete(model: ModelType) -> None:
         await session.delete(model)  # type: ignore[arg-type]
 
-    @standalone_session
     async def delete_by_id(
         self,
         id: int,
@@ -101,6 +95,5 @@ class BaseRepository(Generic[ModelType]):
             raise ValueError(f"{self.model} HAS NO ID")
 
     @staticmethod
-    @standalone_session
     def save(model: ModelType) -> None:
         session.add(model)  # type: ignore[func-returns-value]

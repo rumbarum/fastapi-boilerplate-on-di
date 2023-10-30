@@ -15,7 +15,7 @@ from .exceptions import (
     UserNotFoundException,
 )
 from .models import LoginResponseSchema, User
-from .repository import UserRepository
+from .repository import UserAlchemyRepository
 
 session: async_scoped_session = Provide["session"]
 
@@ -33,7 +33,7 @@ def check_password(hashed_password: str, user_password: str) -> bool:
 
 
 class UserService(BaseService):
-    repository: UserRepository
+    repository: UserAlchemyRepository
 
     def __init__(self, repository):
         super().__init__(repository)

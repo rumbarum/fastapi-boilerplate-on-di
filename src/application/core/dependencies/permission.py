@@ -4,7 +4,7 @@ from fastapi import Request
 from fastapi.openapi.models import APIKey, APIKeyIn
 from fastapi.security.base import SecurityBase
 
-from application.domain.auth.permissions import BasePermission
+from application.core.authority.permissions import BasePermission
 
 
 class PermissionDependency(SecurityBase):

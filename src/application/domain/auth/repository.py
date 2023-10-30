@@ -2,7 +2,7 @@ from dependency_injector.wiring import Provide
 from sqlalchemy import and_, select, update
 from sqlalchemy.ext.asyncio import async_scoped_session
 
-from application.core.base_class.repository import BaseRepository
+from application.core.base_class.repository import BaseAlchemyRepository
 from application.core.db import standalone_session
 
 from .models import Token
@@ -12,7 +12,7 @@ session: async_scoped_session = Provide["session"]
 from typing import Type
 
 
-class TokenRepository(BaseRepository[Token]):
+class TokenAlchemyRepository(BaseAlchemyRepository[Token]):
     model: Type[Token]
 
     def __init__(self, model):
