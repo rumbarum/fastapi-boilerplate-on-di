@@ -19,7 +19,7 @@ from application.core.middlewares import (
     on_auth_error,
 )
 from application.core.middlewares.sqlalchemy import SQLAlchemyMiddleware
-from application.core.utils.http_client import Aiohttp
+from application.core.external_service.http_client import Aiohttp
 from application.domain.auth.container import AuthContainer
 from application.domain.log.container import LogContainer
 from application.domain.user.container import UserContainer
