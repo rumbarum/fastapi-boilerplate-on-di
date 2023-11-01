@@ -9,8 +9,10 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import sessionmaker
 
+from application.core.config.config_container import config_container
 from application.core.db.session_maker import RoutingSession, get_session_context
 from application.core.external_service.auth_client import AuthClient
+from application.core.external_service.http_client import Aiohttp
 from application.core.helpers.cache import CacheManager, CustomKeyMaker, RedisBackend
 from application.core.helpers.logging import init_logger
 from application.core.middlewares import (
@@ -19,12 +21,9 @@ from application.core.middlewares import (
     on_auth_error,
 )
 from application.core.middlewares.sqlalchemy import SQLAlchemyMiddleware
-from application.core.external_service.http_client import Aiohttp
 from application.domain.auth.container import AuthContainer
 from application.domain.log.container import LogContainer
 from application.domain.user.container import UserContainer
-
-from application.core.config.config_container import config_container
 
 
 class AppContainer(containers.DeclarativeContainer):
