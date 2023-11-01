@@ -1,10 +1,10 @@
 from pydantic import BaseModel, Field
 from sqlalchemy import BigInteger, Boolean, Column, Enum, Unicode
 
+from application.core.authority.permissions import Authority
 from application.core.db import Base
 from application.core.db.mixins import TimestampMixin
 from application.core.fastapi.pydantic_models import ResponseBaseModel
-from application.core.authority.permissions import Authority
 
 
 class User(Base, TimestampMixin):

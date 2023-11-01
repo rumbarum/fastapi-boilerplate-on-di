@@ -9,8 +9,8 @@ from application.api import router
 from application.container import AppContainer
 from application.core.enums import ResponseCode
 from application.core.exceptions import CustomException
-from application.core.fastapi.custom_json_response import CustomORJSONResponse
 from application.core.external_service.http_client import Aiohttp
+from application.core.fastapi.custom_json_response import CustomORJSONResponse
 from application.domain.log.service import DatabaseLoghandler
 
 nest_asyncio.apply()
