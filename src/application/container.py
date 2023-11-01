@@ -24,7 +24,7 @@ from application.domain.auth.container import AuthContainer
 from application.domain.log.container import LogContainer
 from application.domain.user.container import UserContainer
 
-from .config import config_container
+from application.core.config.config_container import config_container
 
 
 class AppContainer(containers.DeclarativeContainer):
@@ -113,7 +113,7 @@ class AppContainer(containers.DeclarativeContainer):
         scopefunc=get_session_context,
     )
 
-    # domain/.../container
+    # domain/.../config
     user_container = providers.Container(UserContainer)
     auth_container = providers.Container(AuthContainer)
     log_container = providers.Container(LogContainer)

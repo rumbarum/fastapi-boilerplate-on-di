@@ -6,7 +6,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import FastAPI, Request
 
 from application.api import router
-from application.core.container.app import AppContainer
+from application.container import AppContainer
 from application.core.enums import ResponseCode
 from application.core.exceptions import CustomException
 from application.core.fastapi.custom_json_response import CustomORJSONResponse
@@ -87,7 +87,7 @@ async def create_app() -> FastAPI:
     init_routers(app_=app_)
     init_listeners(app_=app_)
 
-    # This setting attribute is for test suit, making container accessible.
+    # This setting attribute is for test suit, making config accessible.
     # In normal case, use wiring.Provide["container_attr"]
     if config.ENV() != "production":
         app_.container = container  # type: ignore[attr-defined]
