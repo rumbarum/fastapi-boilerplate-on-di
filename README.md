@@ -19,13 +19,13 @@ This source is from [Teamhide's fastapi-boilerplate](https://github.com/teamhide
   - [Netflix dispatcher style domain component](https://github.com/Netflix/dispatch)
 - Static type check(by mypy) is done.
 - Basic test code on `conftest.py` (mock auth middleware)
-- Log router for request and response logging (`src/application/core/fastapi/log_router.py`) can log Internal Server Error 
+- Log router for request and response logging (`src/core/fastapi/log_router.py`) can log Internal Server Error 
 - makefile (for easier development)
 - Separate poetry dependency group into 2, one is for production other is for develop
-- Aiohttp client for request external service (`src/application/core/utils/http_client`)
-- Authentication middleware for external auth server (`src/application/core/middlewares/authentication_external`)
-- Classified Exception Class (`src/application/core/utils/http_client`)
-- Json Encoder Extended CustomORJSONResponse(`src/application/core/fastapi/custom_json_response.py`) for np or pd data type.
+- Aiohttp client for request external service (`src/core/utils/http_client`)
+- Authentication middleware for external auth server (`src/core/middlewares/authentication_external`)
+- Classified Exception Class
+- Json Encoder Extended CustomORJSONResponse(`src/core/fastapi/custom_json_response.py`) for np or pd data type.
 
 # Project Config
 make .env.local file by
@@ -81,7 +81,7 @@ $ make run
 ## SQLAlchemy for asyncio context
 
 ```python
-from application.core import Transactional
+from application.core.db import Transactional
 from dependency_injector.wiring import Provide
 
 session = Provide["session"]
@@ -103,7 +103,7 @@ However, it doesn't go through middleware in tests or background tasks.
 So you need to use the `@standalone_session` decorator.
 
 ```python
-from application.core import standalone_session
+from application.core.db import standalone_session
 
 
 @standalone_session
@@ -168,7 +168,7 @@ Refer `Logging` class inside of `core/fastapi/dependencies/logging.py`
 Permissions `IsAdmin`, `IsAuthenticated`, `AllowAll` have already been implemented.
 
 ```python
-from application.core import (
+from application.core.fastapi.dependencies import (
   PermissionDependency,
 )
 from application.core.authority.permissions import IsAdmin

@@ -21,6 +21,7 @@ services:
       - ./migrations:/home/docker_user/migrations
       - ./alembic.ini:/home/docker_user/domain/alembic.ini
 
+      - ./alembic.ini:/home/docker_user/app/alembic.ini
   db:
     build:
       context: .
