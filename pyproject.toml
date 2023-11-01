@@ -62,6 +62,15 @@ mypy_path = "src"
 #disallow_untyped_defs = "True"
 plugins = ["sqlalchemy.ext.mypy.plugin","sqlmypy","pydantic.mypy"]
 
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "semver"
+version_provider = "poetry"
+update_changelog_on_bump = true
+major_version_zero = true
+use_shortcuts = true
+
 [tool.pytest.ini_options]
 addopts = "--tb=short"
 pythonpath = "src"
