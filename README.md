@@ -262,7 +262,7 @@ If you want to create a custom key, inherit the BaseBackend class and implement 
 Set your custom backend or keymaker on   (`src/core/container/app.py`)
 
 ```python
-# core/container/domain.py
+# core/config/domain.py
 ...
 # this change applied to cache manager automatically 
 redis_backend = providers.Factory(YourRedisBackend)

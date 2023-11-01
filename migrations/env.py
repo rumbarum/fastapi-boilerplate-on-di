@@ -29,7 +29,7 @@ if config.config_file_name is not None:
 from application.domain.user.models import Base
 
 # For auto generate schemas
-from application.core.container.config import config as app_config
+from application.core.config.config_container import config as app_config
 
 target_metadata = Base.metadata
 

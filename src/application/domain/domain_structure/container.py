@@ -5,7 +5,7 @@ from .repository import YourAlchemyRepository
 from .service import YourService
 
 
-# register below to core.domain.container.AppContainer
+# register below to core.domain.config.AppContainer
 class YourDomainContainer(containers.DeclarativeContainer):
 
     your_repository = providers.Factory(YourAlchemyRepository, YourModel)

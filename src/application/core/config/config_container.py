@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from application.core.settings_model import Settings
+from application.core.config.settings_model import Settings
 
 
 class ConfigContainer(containers.DeclarativeContainer):
@@ -16,6 +16,6 @@ class ConfigContainer(containers.DeclarativeContainer):
 
 
 config_container = ConfigContainer()
-# This is used for when config required before container init.
+# This is used for when config required before config init.
 # e.g. main.py, migrations
 config = config_container.config
