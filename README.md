@@ -1,8 +1,8 @@
 # FastAPI Boilerplate
 
-This source is from [Teamhide's fastapi-boilerplate](https://github.com/teamhide/fastapi-boilerplate)
+Source is from [Teamhide's fastapi-boilerplate](https://github.com/teamhide/fastapi-boilerplate)
 
-# Features
+# Base Features
 - Async SQLAlchemy session
 - Custom user class
 - Dependencies for specific permissions
@@ -12,20 +12,20 @@ This source is from [Teamhide's fastapi-boilerplate](https://github.com/teamhide
 
 # Added Features
 
-- All projects settings are injected by `.env` file.
-- Code dependencies are managed by [Dependency Injector](https://python-dependency-injector.ets-labs.org/) under `src/core/container/app.py`
+- Code dependencies are managed by [Dependency Injector](https://python-dependency-injector.ets-labs.org/) under `src/application/container.py`
+- All projects settings are injected by `.env` file thorough pydantic Settings. (refer `src/application/core/config/settings_model.py`)
 - More simplified skeleton
   - separate src(fastapi app related code) and others(docker, tests)
   - [Netflix dispatcher style domain component](https://github.com/Netflix/dispatch)
 - Static type check(by mypy) is done.
-- Basic test code on `conftest.py` (mock auth middleware)
-- Log router for request and response logging (`src/core/fastapi/log_router.py`) can log Internal Server Error 
+- Log router for request and response logging (`src/application/core/fastapi/log_router.py`) can log Internal Server Error 
 - makefile (for easier development)
-- Separate poetry dependency group into 2, one is for production other is for develop
-- Aiohttp client for request external service (`src/core/utils/http_client`)
-- Authentication middleware for external auth server (`src/core/middlewares/authentication_external`)
-- Classified Exception Class
-- Json Encoder Extended CustomORJSONResponse(`src/core/fastapi/custom_json_response.py`) for np or pd data type.
+- Separate poetry dependency group into 2, one is for production, other is for develop
+- Aiohttp client for request external service (`src/application/core/external_service/http_client`)
+- Authentication middleware for external auth server (`src/application/core/middlewares/authentication_external`)
+- Classified Exception Class (`src/application/core/exceptions`)
+- Json Encoder Extended CustomORJSONResponse for faster serialization(`src/application/core/fastapi/custom_json_response.py`)
+- Async test samples on pytest-asyncio with samples 
 
 # Project Config
 make .env.local file by
@@ -85,7 +85,6 @@ from application.core.db import Transactional
 from dependency_injector.wiring import Provide
 
 session = Provide["session"]
-
 
 @Transactional()
 async def create_user(self):
