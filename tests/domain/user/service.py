@@ -1,7 +1,9 @@
+import pytest
+
 import pytest_asyncio
 from application.domain.user.models import User
 
-from application.core import standalone_session
+from application.core.db import standalone_session
 
 from application.server import app
 
@@ -43,3 +45,18 @@ async def test_():
     q = select(User)
     result = await root_container.session().execute(q)
     assert result.scalars().first().email == user_info["email"]
+
+
+@pytest.mark.asyncio
+async def test_get_user_list():
+    ...
+
+
+@pytest.mark.asyncio
+async def test_create_user():
+    ...
+
+
+@pytest.mark.asyncio
+async def test_is_admin():
+    ...
