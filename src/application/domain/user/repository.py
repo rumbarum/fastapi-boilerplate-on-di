@@ -1,5 +1,3 @@
-from typing import List, Type
-
 from dependency_injector.wiring import Provide
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import async_scoped_session
@@ -12,8 +10,8 @@ from .models import User
 session: async_scoped_session = Provide["session"]
 
 
-class UserAlchemyRepository(BaseAlchemyRepository[User]):
-    model: Type[User]
+class UserAlchemyRepository(BaseAlchemyRepository[User, int]):
+    model: type[User]
 
     def __init__(self, model):
         super().__init__(model)
@@ -21,7 +19,7 @@ class UserAlchemyRepository(BaseAlchemyRepository[User]):
     @standalone_session
     async def get_user_list(
         self, limit: int = 12, prev: int | None = None
-    ) -> List[User]:
+    ) -> list[User]:
         query = select(self.model)  # type: ignore[arg-type]
 
         if prev is not None:

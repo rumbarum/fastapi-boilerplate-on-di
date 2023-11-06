@@ -94,19 +94,21 @@ class AppContainer(containers.DeclarativeContainer):
     )
 
     # session
-    writer_engine = providers.Factory(
+    writer_engine: providers.Factory[create_async_engine] = providers.Factory(
         create_async_engine, config.WRITER_DB_URL, pool_recycle=3600
     )
-    reader_engine = providers.Factory(
+    reader_engine: providers.Factory[create_async_engine] = providers.Factory(
         create_async_engine, config.READER_DB_URL, pool_recycle=3600
     )
 
-    async_session_factory = providers.Factory(
+    async_session_factory: providers.Factory[sessionmaker] = providers.Factory(
         sessionmaker,
         class_=AsyncSession,
         sync_session_class=RoutingSession,
     )
-    session = providers.ThreadSafeSingleton(
+    session: providers.ThreadSafeSingleton[
+        async_scoped_session
+    ] = providers.ThreadSafeSingleton(
         async_scoped_session,
         session_factory=async_session_factory,
         scopefunc=get_session_context,

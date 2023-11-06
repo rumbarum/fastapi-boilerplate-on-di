@@ -1,8 +1,7 @@
 from contextvars import ContextVar, Token
 
 from dependency_injector.wiring import Provide, inject
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, declarative_base
 from sqlalchemy.sql.expression import Delete, Insert, Update
 
 session_context: ContextVar[str] = ContextVar("session_context")

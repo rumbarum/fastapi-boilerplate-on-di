@@ -9,11 +9,9 @@ from .models import Token
 
 session: async_scoped_session = Provide["session"]
 
-from typing import Type
 
-
-class TokenAlchemyRepository(BaseAlchemyRepository[Token]):
-    model: Type[Token]
+class TokenAlchemyRepository(BaseAlchemyRepository[Token, int]):
+    model: type[Token]
 
     def __init__(self, model):
         super().__init__(model)

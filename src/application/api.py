@@ -29,13 +29,13 @@ router.include_router(home_router, tags=["Home"])
 router.include_router(auth_router, prefix="/auth", tags=["Auth"])
 
 # v1 router
-v1_router = APIRouter(prefix="/api/v1", tags = ["API_V1"])
+v1_router = APIRouter(prefix="/api/v1", tags=["API_V1"])
 v1_router.include_router(user_v1_router, prefix="/users", tags=["User"])
 
 router.include_router(v1_router)
 
 # v2 router
-v2_router = APIRouter(prefix="/api/v2", tags = ["API_V2"])
+v2_router = APIRouter(prefix="/api/v2", tags=["API_V2"])
 
 # attach v2 related routers to v2_router
 # v2_router.include_router(some_v2_router, prefix="/some_path", tags=["Some_tag"])
