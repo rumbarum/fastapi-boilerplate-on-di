@@ -2,8 +2,8 @@ from dependency_injector.wiring import Provide
 from sqlalchemy import and_, select, update
 from sqlalchemy.ext.asyncio import async_scoped_session
 
-from application.core.base_class.repository import BaseAlchemyRepository
 from application.core.db import standalone_session
+from application.core.repository.alchemy_repository import BaseAlchemyRepository
 
 from .models import Token
 

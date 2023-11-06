@@ -3,7 +3,7 @@ from typing import Type
 from dependency_injector.wiring import Provide
 from sqlalchemy.ext.asyncio import async_scoped_session
 
-from application.core.base_class.repository import BaseAlchemyRepository
+from application.core.repository.alchemy_repository import BaseAlchemyRepository
 
 from .models import RequestResponseLog
 
