@@ -8,10 +8,10 @@ from application.core.fastapi.log_route import LogRoute
 from application.core.helpers.cache.cache_manager import cached
 
 from .models import (
-    CreateUserRequestSchema,
-    CreateUserResponseSchema,
-    ErrorResponse,
-    GetUserListResponseSchema,
+    CreateUserIn,
+    CreateUserOut,
+    ErrorOut,
+    GetUserListOut,
     LoginRequest,
     LoginResponse,
 )
@@ -22,9 +22,9 @@ user_router = APIRouter(route_class=LogRoute)
 
 @user_router.get(
     "",
-    response_model=List[GetUserListResponseSchema],
+    response_model=List[GetUserListOut],
     response_model_exclude={"id"},
-    responses={"400": {"model": ErrorResponse}},
+    responses={"400": {"model": ErrorOut}},
     dependencies=[Depends(PermissionDependency([]))],
 )
 @cached(prefix="get_user_list", ttl=60)
@@ -39,12 +39,12 @@ async def get_user_list(
 
 @user_router.post(
     "",
-    response_model=CreateUserResponseSchema,
-    responses={"400": {"model": ErrorResponse}},
+    response_model=CreateUserOut,
+    responses={"400": {"model": ErrorOut}},
 )
 @inject
 async def create_user(
-    request: CreateUserRequestSchema,
+    request: CreateUserIn,
     user_service: UserService = Depends(Provide["user_container.user_service"]),
 ):
     await user_service.create_user(**request.dict())
@@ -54,7 +54,7 @@ async def create_user(
 @user_router.post(
     "/login",
     response_model=LoginResponse,
-    responses={"404": {"model": ErrorResponse}},
+    responses={"404": {"model": ErrorOut}},
 )
 @inject
 async def login(

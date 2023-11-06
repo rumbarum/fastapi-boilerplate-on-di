@@ -14,7 +14,7 @@ from .exceptions import (
     PasswordDoesNotMatchException,
     UserNotFoundException,
 )
-from .models import LoginResponseSchema, User
+from .models import LoginOut, User
 from .repository import UserAlchemyRepository
 
 session: async_scoped_session = Provide["session"]
@@ -83,7 +83,7 @@ class UserService(BaseService):
         email: str,
         password: str,
         token_service: TokenService = Provide["token_container.token_service"],
-    ) -> LoginResponseSchema:
+    ) -> LoginOut:
         user = await self.repository.get_user_by_email(email=email)
         if not user:
             raise UserNotFoundException
@@ -91,7 +91,7 @@ class UserService(BaseService):
             raise NoEmailOrWrongPassword
 
         access_token, refresh_token = await token_service.issue_token(user.id)
-        response = LoginResponseSchema(
+        response = LoginOut(
             access_token=access_token, refresh_token=refresh_token
         )
         return response

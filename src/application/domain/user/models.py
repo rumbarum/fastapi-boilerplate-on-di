@@ -28,7 +28,7 @@ class LoginRequest(BaseModel):
     password: str = Field(..., description="Password")
 
 
-class GetUserListResponseSchema(BaseModel):
+class GetUserListOut(BaseModel):
     id: int = Field(..., description="ID")
     email: str = Field(..., description="Email")
     nickname: str = Field(..., description="Nickname")
@@ -37,14 +37,14 @@ class GetUserListResponseSchema(BaseModel):
         orm_mode = True
 
 
-class CreateUserRequestSchema(BaseModel):
+class CreateUserIn(BaseModel):
     email: str = Field(..., description="Email")
     password1: str = Field(..., description="Password1")
     password2: str = Field(..., description="Password2")
     nickname: str = Field(..., description="Nickname")
 
 
-class CreateUserResponseSchema(BaseModel):
+class CreateUserOut(BaseModel):
     email: str = Field(..., description="Email")
     nickname: str = Field(..., description="Nickname")
 
@@ -52,12 +52,12 @@ class CreateUserResponseSchema(BaseModel):
         orm_mode = True
 
 
-class LoginResponseSchema(BaseModel):
+class LoginOut(BaseModel):
     access_token: str = Field(..., description="Access Token")
     refresh_token: str = Field(..., description="Refresh token")
 
 
-class ErrorResponse(ResponseBaseModel):
+class ErrorOut(ResponseBaseModel):
     code: str
     message: str
     data: dict | list | None
